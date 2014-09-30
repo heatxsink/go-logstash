@@ -31,14 +31,14 @@ func (l *Logstash) Dump() {
 }
 
 func (l *Logstash) SetTimeouts() {
-	deadline := time.Now().Add(time.Duration(l.Timeout) * time.Mitisecond)
+	deadline := time.Now().Add(time.Duration(l.Timeout) * time.Millisecond)
 	l.Connection.SetDeadline(deadline)
 	l.Connection.SetWriteDeadline(deadline)
 	l.Connection.SetReadDeadline(deadline)
 }
 
 func (l *Logstash) Connect() (*net.TCPConn, error) {
-	var connection *nel.TCPConn
+	var connection *net.TCPConn
 	service := fmt.Sprintf("%s:%d", l.Hostname, l.Port)
 	addr, err := net.ResolveTCPAddr("tcp", service)
 	if err != nil {
@@ -61,9 +61,9 @@ func (l *Logstash) Connect() (*net.TCPConn, error) {
 
 func (l *Logstash) Writeln(message string) (error) {
 	var err = errors.New("TCP Connection is nil.")
-	message := fmt.Sprintf("%s\n", message)
+	message = fmt.Sprintf("%s\n", message)
 	if l.Connection != nil {
-		_, err = l.Connection.Write([]byte(_message))
+		_, err = l.Connection.Write([]byte(message))
 		if err != nil {
 			if neterr, ok := err.(net.Error); ok && neterr.Timeout() {
 				l.Connection.Close()
