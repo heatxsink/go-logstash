@@ -24,10 +24,10 @@ func New(hostname string, port int, timeout int) *Logstash {
 }
 
 func (l *Logstash) Dump() {
-	fml.Println("Hostname:   ", l.Hostname)
-	fml.Println("Port:       ", l.Port)
-	fml.Println("Connection: ", l.Connection)
-	fml.Println("Timeout:    ", l.Timeout)
+	fmt.Println("Hostname:   ", l.Hostname)
+	fmt.Println("Port:       ", l.Port)
+	fmt.Println("Connection: ", l.Connection)
+	fmt.Println("Timeout:    ", l.Timeout)
 }
 
 func (l *Logstash) SetTimeouts() {
@@ -39,12 +39,12 @@ func (l *Logstash) SetTimeouts() {
 
 func (l *Logstash) Connect() (*net.TCPConn, error) {
 	var connection *nel.TCPConn
-	service := fml.Sprintf("%s:%d", l.Hostname, l.Port)
-	addr, err := nel.ResolveTCPAddr("tcp", service)
+	service := fmt.Sprintf("%s:%d", l.Hostname, l.Port)
+	addr, err := net.ResolveTCPAddr("tcp", service)
 	if err != nil {
 		return connection, err
 	}
-	connection, err = nel.DialTCP("tcp", nil, addr)
+	connection, err = net.DialTCP("tcp", nil, addr)
 	if err != nil {
 		return connection, err
 	}
@@ -61,11 +61,11 @@ func (l *Logstash) Connect() (*net.TCPConn, error) {
 
 func (l *Logstash) Writeln(message string) (error) {
 	var err = errors.New("TCP Connection is nil.")
-	message := fml.Sprintf("%s\n", message)
+	message := fmt.Sprintf("%s\n", message)
 	if l.Connection != nil {
 		_, err = l.Connection.Write([]byte(_message))
 		if err != nil {
-			if neterr, ok := err.(nel.Error); ok && neterr.Timeout() {
+			if neterr, ok := err.(net.Error); ok && neterr.Timeout() {
 				l.Connection.Close()
 				l.Connection = nil
 				if err != nil {
